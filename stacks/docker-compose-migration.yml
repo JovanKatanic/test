@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  explorer-migration:
+    image: explorer:${EXPLORER_MIGRATION_VERSION-migration-latest}
+    build:
+      dockerfile: stacks/build/backend/Dockerfile
+      context: ../
+      target: execute-migration
+    networks:
+      - database
+    environment:
+      DATABASE_HOST: ${EXPLORER_DATABASE_HOST}
+      DATABASE_USERNAME: ${EXPLORER_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${EXPLORER_DATABASE_PASSWORD}
+      DATABASE_SCHEMA: ${EXPLORER_DATABASE_SCHEMA}
+
+networks:
+  database:
+    name: database
+    driver: bridge
+    external: true

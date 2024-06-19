@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+  gateway:
+    image: tourism/gateway:${GATEWAY_VERSION-latest}
+    build:
+      context: build/gateway
+      target: ${GATEWAY_BUILD_TARGET:-gatewayWithFront}
+      args:
+        - TOURISM_API_URL=${TOURISM_FRONT_API_URL}
+        - TOURISM_WSS_URL=${TOURISM_FRONT_WSS_URL}
+    restart: on-failure
+    networks:
+      - public
+      - application
+    ports:
+      - "${GATEWAY_PUBLISHED_PORT-8080}:8080"
+    depends_on:
+      - explorer
+
+  explorer:
+    image: explorer:${EXPLORER_VERSION-latest}
+    build:
+      dockerfile: stacks/build/backend/Dockerfile
+      context: ../
+      target: ${EXPLORER_BUILD_TARGET:-final}
+    restart: on-failure
+    networks:
+      - application
+      - database
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      #STAGE: ${EXPLORER_STAGE}
+      DATABASE_HOST: ${EXPLORER_DATABASE_HOST}
+      DATABASE_PORT: ${EXPLORER_DATABASE_PORT}
+      DATABASE_PASSWORD: ${EXPLORER_DATABASE_PASSWORD}
+      DATABASE_USER: ${EXPLORER_DATABASE_USERNAME}
+      DATABASE_SCHEMA: ${EXPLORER_DATABASE_SCHEMA}
+      EXPLORER_CORS_ORIGINS: ${EXPLORER_CORS_ORIGINS}
+    depends_on:
+      - database
+      
+  database:
+    image: postgres:${POSTGRES_VERSION-16}
+    restart: always
+    networks:
+      - database
+    environment:
+      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - type: volume
+        source: database-data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: '../Razni fajlovi/DEMO_SKRIPTA.sql'
+        target: /tmp/DEMO_SKRIPTA.sql
+    ports:
+      - "${POSTGRES_PUBLISHED_PORT-5432}:5432"
+volumes:
+  database-data:
+    name: explorer-database
+
+networks:
+  public:
+    name: public
+    driver: bridge
+  application:
+    name: application
+    driver: bridge
+  database:
+    name: database
+    driver: bridge
