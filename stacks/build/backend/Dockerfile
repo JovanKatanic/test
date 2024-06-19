@@ -2,6 +2,7 @@
 
 ARG ASPNET_VERSION=7.0
 ARG SDK_VERSION=7.0
+ARG PAT
 
 FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS base
 WORKDIR /app
@@ -9,7 +10,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:${SDK_VERSION} as build
 ENV PROJECT=Explorer.API
 ARG SRC_URL=https://github.com/PSW-group5-2023/tourism-be/archive/refs/heads/feat/deployment.tar.gz
-ARG GITHUB_TOKEN=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
+ARG GITHUB_TOKEN=${PAT}
 WORKDIR /src
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update -y \

@@ -32,7 +32,10 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/explorer:${{steps.get-tag.outputs.tag}}
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/explorer:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/explorer:buildcache,mode=max
-
+          build-args: |
+            ASPNET_VERSION=7.0
+            SDK_VERSION=7.0
+            PAT=${{ secrets.PAT }}
           
       # - name: Deploy service
       #   uses: appleboy/ssh-action@master
