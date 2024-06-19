@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - test/github-actions
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Install .NET 7 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+
+      # - name: Set up JDK 17
+      #   uses: actions/setup-java@v1
+      #   with:
+      #     java-version: 17
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: ./src
+
+      # - name: Run tests
+      #   run: dotnet test --no-build --verbosity normal --configuration Release
+      #   working-directory: ./src
