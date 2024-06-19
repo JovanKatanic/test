@@ -3,7 +3,7 @@ name: Release
 on:
   workflow_run:
     workflows: [Build]
-    branches: [test/github-actions]
+    branches: [main]
     types:
       - completed
 

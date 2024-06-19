@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - test/github-actions
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
