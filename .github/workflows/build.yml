@@ -12,6 +12,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      
     steps:
       - name: Install .NET 7 SDK
         uses: actions/setup-dotnet@v4
@@ -23,6 +28,11 @@ jobs:
         with:
           fetch-depth: 0 
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'csharp'
+
       - name: Restore dependencies
         run: dotnet restore
         working-directory: ./src
@@ -31,6 +41,8 @@ jobs:
         run: dotnet build --configuration Release
         working-directory: ./src
 
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
       # - name: Run tests
       #   run: dotnet test --no-build --verbosity normal --configuration Release
       #   working-directory: ./src
