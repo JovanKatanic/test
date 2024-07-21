@@ -51,3 +51,4 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"JovanKatanic_test" /o:"JovanKatanic" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.exclusions="**/Migrations/**, **/*.sql"
           dotnet build --no-incremental
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        working-directory: ./src  
