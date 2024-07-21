@@ -42,7 +42,9 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-        working-directory: ./src  
+        working-directory: ./src 
+      - name: Install dotnet-coverage tool
+        run: dotnet tool install --global dotnet-coverage   
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
